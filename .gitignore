@@ -1,0 +1,11 @@
+# config
+.eslintrc
+
+# misc
+.DS_Store
+
+# dependencies
+/node_modules
+
+# build
+/build
