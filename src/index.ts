@@ -7,7 +7,9 @@ import {
   findUserIndexById,
   removeUserById,
   getUsers,
+  userExists,
 } from './services/service.user';
+import { constants } from './config';
 
 const app = express();
 const server = http.createServer(app);
@@ -19,9 +21,17 @@ io.on('connection', (socket: SocketIO.Socket) => {
   const { id } = socket;
   const currentuser = findUserById(id);
 
-  socket.on('new-user', (name: string) => {
-    addUser(id, name);
-    socket.broadcast.emit('user-connected', name);
+  socket.on('new-user', (name: string) => {    
+    if (userExists(id)) {      
+      // TODO an error could be thrown instead
+      socket.emit('login_error', {
+        error: constants.LOG_IN_ERROR,
+        message: constants.USER_EXISTS_MESSAGE,
+      });
+    } else {
+      addUser(id, name);
+      socket.broadcast.emit('user-connected', name);
+    }
   });
   socket.on('send-chat-message', (message: string) => {
     console.log(getUsers());

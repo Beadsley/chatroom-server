@@ -22,3 +22,5 @@ export const removeUserById = (index: number): void => {
 };
 
 export const getUsers = (): Array<User> => users;
+
+export const userExists = (id: string): boolean => users.some((user) => user.id === id);
