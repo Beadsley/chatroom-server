@@ -5,7 +5,7 @@ import {
   addUser,
   findUserById,
   findUserIndexById,
-  removeUserById,
+  removeUserByIndex,
   getUsers,
   userExists,
 } from './services/service.user';
@@ -21,8 +21,8 @@ io.on('connection', (socket: SocketIO.Socket) => {
   const { id } = socket;
   const currentuser = findUserById(id);
 
-  socket.on('new-user', (name: string) => {    
-    if (userExists(id)) {      
+  socket.on('new-user', (name: string) => {
+    if (userExists(id)) {
       // TODO an error could be thrown instead
       socket.emit('login_error', {
         error: constants.LOG_IN_ERROR,
@@ -34,8 +34,6 @@ io.on('connection', (socket: SocketIO.Socket) => {
     }
   });
   socket.on('send-chat-message', (message: string) => {
-    console.log(getUsers());
-
     socket.broadcast.emit('chat-message', {
       message: message,
       name: currentuser && currentuser.name,
@@ -45,7 +43,7 @@ io.on('connection', (socket: SocketIO.Socket) => {
     const currentuser = findUserById(id);
     socket.broadcast.emit('user-disconnected', currentuser && currentuser.name);
     const index = findUserIndexById(id);
-    index !== -1 && removeUserById(index);
+    index !== -1 && removeUserByIndex(index);
   });
 });
 
