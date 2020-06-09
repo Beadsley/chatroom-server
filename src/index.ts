@@ -10,6 +10,7 @@ import {
   userExists,
 } from './services/service.user';
 import { constants } from './config';
+import logger from './services/service.logger';
 
 const app = express();
 const server = http.createServer(app);
@@ -19,18 +20,20 @@ const PORT = 3000;
 //TODO set up a controllers directory
 
 io.on('connection', (socket: SocketIO.Socket) => {
-  console.log('connected');
   const { id } = socket;
+
   let inactivityTimer: NodeJS.Timeout;
 
   socket.on('new-user', (name: string) => {
     if (userExists(id)) {
       // TODO an error could be thrown instead
+      logger.error(constants.USER_EXISTS_MESSAGE);
       socket.emit('login_error', {
         error: constants.LOG_IN_ERROR,
         message: constants.USER_EXISTS_MESSAGE,
       });
     } else {
+      logger.info(`New user: ${name}`);
       addUser(id, name);
       resetTimer();
       socket.broadcast.emit('user-connected', name);
@@ -39,7 +42,7 @@ io.on('connection', (socket: SocketIO.Socket) => {
   socket.on('send-chat-message', (message: string) => {
     const currentuser = findUserById(id);
     console.log(getUsers());
-    
+
     resetTimer();
     socket.broadcast.emit('chat-message', {
       message: message,
@@ -49,6 +52,7 @@ io.on('connection', (socket: SocketIO.Socket) => {
   socket.on('disconnect', () => {
     const currentuser = findUserById(id);
     socket.broadcast.emit('user-disconnected', currentuser && currentuser.name);
+    currentuser && logger.info(`User left the chat: ${currentuser.name}`);
     const index = findUserIndexById(id);
     index !== -1 && removeUserByIndex(index);
   });
@@ -59,6 +63,7 @@ io.on('connection', (socket: SocketIO.Socket) => {
       // TODO seperate function
       const currentuser = findUserById(id);
       socket.broadcast.emit('user-disconnected', currentuser && currentuser.name); // TODO 'timeout' event
+      currentuser && logger.info(`User inactive: ${currentuser.name}`);
       const index = findUserIndexById(id);
       index !== -1 && removeUserByIndex(index);
     }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
