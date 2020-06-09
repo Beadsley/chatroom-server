@@ -53,13 +53,13 @@ describe('Service User Module', () => {
     it('should return true', () => {
       const id = '1';
       addUser(id, 'dan');
-      const exists = userExists(id);
+      const exists = userExists('dan');
       assert.strictEqual(exists, true);
     });
     it('should return false', () => {
       const id = '1';
       addUser(id, 'dan');
-      const exists = userExists('2');
+      const exists = userExists('sam');
       assert.strictEqual(exists, false);
     });
   });

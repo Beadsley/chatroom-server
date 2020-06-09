@@ -23,7 +23,7 @@ export const removeUserByIndex = (index: number): void => {
 
 export const getUsers = (): Array<User> => users;
 
-export const userExists = (id: string): boolean => users.some((user) => user.id === id);
+export const userExists = (name: string): boolean => users.some((user) => user.name === name);
 
 export const removeAllUser = (): void => {
   users.length = 0;
