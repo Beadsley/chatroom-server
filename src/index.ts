@@ -1,96 +1,23 @@
 import express from 'express';
 import socketio from 'socket.io';
 import http from 'http';
-import {
-  addUser,
-  findUserById,
-  findUserIndexById,
-  removeUserByIndex,
-  getUsers,
-  userExists,
-} from './services/service.user';
-import { constants } from './config';
-import logger from './services/service.logger';
+import { handleNewUser, handleMessage, handleDisconnect, handleTermination } from './controllers/controller.chatroom';
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 const PORT = 3000;
 
-//TODO set up a controllers directory
-
 io.on('connection', (socket: SocketIO.Socket) => {
-  const { id } = socket;
+  socket.on('new-user', handleNewUser(socket));
 
-  let inactivityTimer: NodeJS.Timeout;
+  socket.on('send-chat-message', handleMessage(socket));
 
-  socket.on('new-user', (name: string) => {
-    if (userExists(id)) {
-      // TODO an error could be thrown instead
-      logger.error(constants.USER_EXISTS_MESSAGE);
-      socket.emit('login_error', {
-        error: constants.LOG_IN_ERROR,
-        message: constants.USER_EXISTS_MESSAGE,
-      });
-    } else {
-      logger.info(`New user: ${name}`);
-      addUser(id, name);
-      resetTimer();
-      socket.broadcast.emit('user-connected', name);
-    }
-  });
-  socket.on('send-chat-message', (message: string) => {
-    const currentuser = findUserById(id);
-    console.log(getUsers());
-
-    resetTimer();
-    socket.broadcast.emit('chat-message', {
-      message: message,
-      name: currentuser && currentuser.name,
-    });
-  });
-  socket.on('disconnect', () => {
-    const currentuser = findUserById(id);
-    socket.broadcast.emit('user-disconnected', currentuser && currentuser.name);
-    currentuser && logger.info(`User left the chat: ${currentuser.name}`);
-    const index = findUserIndexById(id);
-    index !== -1 && removeUserByIndex(index);
-  });
-  const resetTimer = () => {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      // TODO seperate function
-      const currentuser = findUserById(id);
-      socket.broadcast.emit('user-disconnected', currentuser && currentuser.name); // TODO 'timeout' event
-      currentuser && logger.info(`User inactive: ${currentuser.name}`);
-      const index = findUserIndexById(id);
-      index !== -1 && removeUserByIndex(index);
-    }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
-  };
+  socket.on('disconnect', handleDisconnect(socket));
 });
 
-const disconnectAllSockets = () => {
-  const connectedSockets: Array<SocketIO.Socket> = Object.values(io.of("/").connected);  
-  connectedSockets.forEach((socket) =>{
-    socket.disconnect(true);
-});
-}
+process.on('SIGTERM', handleTermination(io, server));
 
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM signal received.');
-  logger.info('Closing http server.');
-  server.close(() => {
-    logger.info('Server closed.');
-  });
-});
-
-process.on('SIGINT', () => {
-  logger.info('SIGINT signal received.');
-  logger.info('Closing http server.');  
-  disconnectAllSockets();
-  server.close(() => {
-    logger.info('Server closed.');
-  });
-});
+process.on('SIGINT', handleTermination(io, server));
 
 server.listen(PORT);

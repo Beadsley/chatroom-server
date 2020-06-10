@@ -1,16 +1,19 @@
 interface User {
   id: string;
   name: string;
+  inactivityTimer: NodeJS.Timeout | undefined;
 }
 
 let users: Array<User> = [];
 
-export const addUser = (id: string, name: string): void => {
+export const addUser = (id: string, name: string): User => {
   const user = {
     id,
     name,
+    inactivityTimer: undefined,
   };
   users.push(user);
+  return user;
 };
 
 export const findUserById = (id: string): User | undefined => users.find((user) => user.id === id);
@@ -28,3 +31,7 @@ export const userExists = (name: string): boolean => users.some((user) => user.n
 export const removeAllUser = (): void => {
   users.length = 0;
 };
+
+export const updateUserByIndex = (index: number, user: User) => {
+  users.splice(index, 1, user);
+}
