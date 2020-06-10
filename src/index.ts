@@ -56,7 +56,6 @@ io.on('connection', (socket: SocketIO.Socket) => {
     const index = findUserIndexById(id);
     index !== -1 && removeUserByIndex(index);
   });
-
   const resetTimer = () => {
     clearTimeout(inactivityTimer);
     inactivityTimer = setTimeout(() => {
@@ -68,6 +67,30 @@ io.on('connection', (socket: SocketIO.Socket) => {
       index !== -1 && removeUserByIndex(index);
     }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
   };
+});
+
+const disconnectAllSockets = () => {
+  const connectedSockets: Array<SocketIO.Socket> = Object.values(io.of("/").connected);  
+  connectedSockets.forEach((socket) =>{
+    socket.disconnect(true);
+});
+}
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM signal received.');
+  logger.info('Closing http server.');
+  server.close(() => {
+    logger.info('Server closed.');
+  });
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT signal received.');
+  logger.info('Closing http server.');  
+  disconnectAllSockets();
+  server.close(() => {
+    logger.info('Server closed.');
+  });
 });
 
 server.listen(PORT);
