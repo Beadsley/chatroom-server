@@ -28,7 +28,7 @@ export const getUsers = (): Array<User> => users;
 
 export const userExists = (name: string): boolean => users.some((user) => user.name === name);
 
-export const removeAllUser = (): void => {
+export const removeAllUsers = (): void => {
   users.length = 0;
 };
 
