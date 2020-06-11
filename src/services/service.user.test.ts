@@ -1,17 +1,18 @@
 import assert from 'assert';
 import {
   addUser,
-  removeAllUser,
+  removeAllUsers,
   findUserById,
   findUserIndexById,
   getUsers,
   userExists,
   removeUserByIndex,
+  updateUserByIndex,
 } from './service.user';
 
 describe('Service User Module', () => {
   beforeEach(() => {
-    removeAllUser();
+    removeAllUsers();
   });
 
   describe('Add User', () => {
@@ -33,6 +34,7 @@ describe('Service User Module', () => {
       const expected = {
         id,
         name: 'dan',
+        inactivityTimer: undefined,
       };
       const user = findUserById(id);
       assert.deepEqual(user, expected);
@@ -46,6 +48,12 @@ describe('Service User Module', () => {
       assert.strictEqual(user1index, 0);
       assert.strictEqual(user2index, 1);
       assert.strictEqual(noUser, -1);
+    });
+    it('should return undefined', () => {
+      const id = 'sddn1';
+      addUser(id, 'dan');
+      const user = findUserById(id + 'not');
+      assert.deepEqual(user, undefined);
     });
   });
 
@@ -71,6 +79,19 @@ describe('Service User Module', () => {
       const exists = userExists('2');
       assert.strictEqual(getUsers().length, 1);
       assert.strictEqual(exists, false);
+    });
+  });
+  describe('Update a user', () => {
+    it('should update user name', () => {
+      const id = '1';
+      let user = addUser(id, 'charlie');
+      const newUserInfo = {
+        ...user,
+        name: 'dan',
+      };
+      updateUserByIndex(0, newUserInfo);
+      const updateduser = findUserById(id);
+      updateduser && assert.strictEqual(updateduser.name, 'dan');
     });
   });
 });
