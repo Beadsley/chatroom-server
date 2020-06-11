@@ -10,6 +10,7 @@ import {
 } from '../services/service.user';
 import { constants } from '../config';
 import http from 'http';
+import { Message } from '../types';
 
 export const handleNewUser = (socket: SocketIO.Socket) => (name: string) => {
   const { id } = socket;
@@ -22,21 +23,17 @@ export const handleNewUser = (socket: SocketIO.Socket) => (name: string) => {
       message: constants.USER_EXISTS_MESSAGE,
     });
   } else {
-    logger.info(`New user: ${name}`);
+    logger.info(`New user: ${name}, ${id}`);
     addUser(id, name);
     resetTimer(socket);
     socket.broadcast.emit('user-connected', name);
   }
 };
 
-export const handleMessage = (socket: SocketIO.Socket) => (message: string) => {
-  const { id } = socket;
-  const currentuser = findUserById(id);
-  currentuser && resetTimer(socket);
-  socket.broadcast.emit('chat-message', {
-    message: message,
-    name: currentuser && currentuser.name,
-  });
+
+export const handleMessage = (socket: SocketIO.Socket) => (message: Message) => {
+  resetTimer(socket);
+  socket.broadcast.emit('chat-message', message);
 };
 
 export const handleDisconnect = (socket: SocketIO.Socket) => () => {

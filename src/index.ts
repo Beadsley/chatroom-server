@@ -6,7 +6,7 @@ import { handleNewUser, handleMessage, handleDisconnect, handleTermination } fro
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-const PORT = 3000;
+const PORT = 8080;
 
 io.on('connection', (socket: SocketIO.Socket) => {
   socket.on('new-user', handleNewUser(socket));
