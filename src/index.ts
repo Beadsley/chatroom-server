@@ -14,6 +14,9 @@ io.on('connection', (socket: SocketIO.Socket) => {
   socket.on('send-chat-message', handleMessage(socket));
 
   socket.on('disconnect', handleDisconnect(socket));
+
+  socket.on('logout', handleDisconnect(socket));
+
 });
 
 process.on('SIGTERM', handleTermination(io, server));

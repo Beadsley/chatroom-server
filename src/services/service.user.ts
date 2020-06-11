@@ -32,6 +32,6 @@ export const removeAllUsers = (): void => {
   users.length = 0;
 };
 
-export const updateUserByIndex = (index: number, user: User) => {
+export const updateUserByIndex = (index: number, user: User): void => {
   users.splice(index, 1, user);
-}
+};

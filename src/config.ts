@@ -1,3 +1,4 @@
+// TODO move to types
 export enum constants {
   // error constants
   LOG_IN_ERROR = 'LOG_IN',
