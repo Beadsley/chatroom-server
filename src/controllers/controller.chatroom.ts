@@ -38,7 +38,7 @@ export const handleNewUser = (socket: SocketIO.Socket) => (name: string): void =
 
 export const handleMessage = (socket: SocketIO.Socket) => (message: Message): void => {
   resetTimer(socket);
-  logger.info(`New message: ${message.message}, ${message.name}`);
+  logger.info(`New message: ${message.text}, ${message.sender}`);
   socket.broadcast.emit('chat-message', message);
 };
 
