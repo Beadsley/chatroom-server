@@ -51,7 +51,9 @@ export const handleDisconnect = (socket: SocketIO.Socket) => (): void => {
   index !== -1 && removeUserByIndex(index);
 };
 
-export const handleTermination = (io: SocketIO.Server, server: http.Server) => (signal: string): void => {
+export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
+  signal: string
+): void => {
   logger.info(`${signal} signal recieved`);
   logger.info('Closing http server.');
   disconnectAllSockets(io);
@@ -78,7 +80,7 @@ const resetTimer = (socket: SocketIO.Socket): void => {
     currentuser.inactivityTimer && clearTimeout(currentuser.inactivityTimer);
     currentuser.inactivityTimer = setTimeout(() => {
       // TODO seperate function
-      currentuser && socket.broadcast.emit('user-inactive', currentuser.name); // TODO 'timeout' event
+      currentuser && socket.emit('user-inactive', currentuser.name); // TODO 'timeout' event
       currentuser && logger.info(`User inactive: ${currentuser.name}`);
       index !== -1 && removeUserByIndex(index);
     }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
