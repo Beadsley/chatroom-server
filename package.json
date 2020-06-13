@@ -8,15 +8,17 @@
     "tsc": "tsc",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
-    "start": "node build/index.js"
+    "start": "NODE_ENV=production node build/index.js"
   },
   "author": "dan beadleson",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
     "@types/http-server": "^0.10.0",
     "@types/mocha": "^7.0.2",
