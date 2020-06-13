@@ -9,7 +9,6 @@
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
-    "prestart": "npm run build",
     "start": "node build/index.js"
   },
   "author": "dan beadleson",
