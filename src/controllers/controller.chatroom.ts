@@ -25,14 +25,14 @@ export const handleNewUser = (socket: SocketIO.Socket) => (name: string): void =
     });
   } else {
     logger.info(`New user: ${name}, ${id}`);
-    addUser(id, name);
+    const newUser = addUser(id, name);
     resetTimer(socket);
     socket.emit('login_success', name);
     socket.emit(
       'current-users',
-      getUsers().map((user) => user.name)
+      getUsers().map((user) => ({ name: user.name, joined: user.joined }))
     );
-    socket.broadcast.emit('user-connected', name);
+    socket.broadcast.emit('user-connected', { name: newUser.name, joined: newUser.joined });
   }
 };
 
@@ -52,9 +52,7 @@ export const handleDisconnect = (socket: SocketIO.Socket) => (): void => {
   socket.disconnect(true);
 };
 
-export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
-  signal: string
-): void => {
+export const handleTermination = (io: SocketIO.Server, server: http.Server) => (signal: string): void => {
   logger.info(`${signal} signal recieved`);
   logger.info('Closing http server.');
   disconnectAllSockets(io);

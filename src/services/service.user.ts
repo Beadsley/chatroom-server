@@ -2,6 +2,7 @@ interface User {
   id: string;
   name: string;
   inactivityTimer: NodeJS.Timeout | undefined;
+  joined: Date;
 }
 
 let users: Array<User> = [];
@@ -11,6 +12,7 @@ export const addUser = (id: string, name: string): User => {
     id,
     name,
     inactivityTimer: undefined,
+    joined: new Date(),
   };
   users.push(user);
   return user;

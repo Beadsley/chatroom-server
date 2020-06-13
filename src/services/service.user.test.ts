@@ -35,6 +35,7 @@ describe('Service User Module', () => {
         id,
         name: 'dan',
         inactivityTimer: undefined,
+        joined: new Date(),
       };
       const user = findUserById(id);
       assert.deepEqual(user, expected);
