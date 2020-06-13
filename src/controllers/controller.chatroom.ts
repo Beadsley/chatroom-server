@@ -49,6 +49,7 @@ export const handleDisconnect = (socket: SocketIO.Socket) => (): void => {
   currentuser && logger.info(`User left the chat: ${currentuser.name}`);
   const index = findUserIndexById(id);
   index !== -1 && removeUserByIndex(index);
+  socket.disconnect(true);
 };
 
 export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
