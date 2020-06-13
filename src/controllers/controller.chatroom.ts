@@ -52,9 +52,7 @@ export const handleDisconnect = (socket: SocketIO.Socket) => (): void => {
   socket.disconnect(true);
 };
 
-export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
-  signal: string
-): void => {
+export const handleTermination = (io: SocketIO.Server, server: http.Server) => (signal: string): void => {
   logger.info(`${signal} signal recieved`);
   logger.info('Closing http server.');
   disconnectAllSockets(io);
