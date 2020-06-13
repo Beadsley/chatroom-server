@@ -82,8 +82,10 @@ const resetTimer = (socket: SocketIO.Socket): void => {
     currentuser.inactivityTimer = setTimeout(() => {
       // TODO seperate function
       currentuser && socket.emit('user-inactive', currentuser.name); // TODO 'timeout' event
+      currentuser && socket.broadcast.emit('user-inactive', currentuser.name); // TODO 'timeout' event
       currentuser && logger.info(`User inactive: ${currentuser.name}`);
       index !== -1 && removeUserByIndex(index);
+      socket.disconnect(true);
     }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
     updateUserByIndex(index, currentuser);
   }
