@@ -10,7 +10,6 @@ const io = socketio(server);
 const PORT = process.env.PORT || 8080;
 app.use(cors());
 
-
 io.on('connection', (socket: SocketIO.Socket) => {
   socket.on('new-user', handleNewUser(socket));
 

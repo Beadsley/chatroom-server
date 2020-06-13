@@ -2,13 +2,15 @@
   "name": "chatroom-server",
   "version": "1.0.0",
   "description": "chatroom-server",
-  "main": "index.ts",
+  "main": "build/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register ./**/*.test.ts",
     "tsc": "tsc",
+    "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
-    "start": "NODE_ENV=production node build/index.js"
+    "prestart": "npm run build",
+    "start": "node build/index.js"
   },
   "author": "dan beadleson",
   "license": "ISC",
