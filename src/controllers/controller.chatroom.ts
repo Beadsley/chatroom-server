@@ -6,19 +6,16 @@ import {
   removeUserByIndex,
   getUsers,
   userExists,
-  updateUserByIndex,
 } from '../services/service.user';
 import { constants } from '../config';
 import http from 'http';
 import { Message } from '../types';
+import { resetTimer, disconnectAllSockets } from "../services/service.socket";
 
 export const handleNewUser = (socket: SocketIO.Socket) => (name: string): void => {
   const { id } = socket;
   if (userExists(name)) {
-    // TODO an error could be thrown instead
     logger.error(constants.USER_EXISTS_MESSAGE);
-
-    // socket.emit('login_error', constants.USER_EXISTS_MESSAGE);
     socket.emit('login_error', {
       type: constants.LOG_IN_ERROR,
       message: constants.USER_EXISTS_MESSAGE,
@@ -61,30 +58,3 @@ export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
   });
 };
 
-// TODO move to sockets service??
-const disconnectAllSockets = (io: SocketIO.Server): void => {
-  const connectedSockets: Array<SocketIO.Socket> = Object.values(io.of('/').connected);
-  connectedSockets.forEach((socket) => {
-    socket.disconnect(true);
-  });
-};
-
-// TODO move to user service??
-const resetTimer = (socket: SocketIO.Socket): void => {
-  const { id } = socket;
-  let currentuser = findUserById(id);
-
-  if (currentuser) {
-    const index = findUserIndexById(id);
-    currentuser.inactivityTimer && clearTimeout(currentuser.inactivityTimer);
-    currentuser.inactivityTimer = setTimeout(() => {
-      // TODO seperate function
-      currentuser && socket.emit('user-inactive', currentuser.name); // TODO 'timeout' event
-      currentuser && socket.broadcast.emit('user-inactive', currentuser.name); // TODO 'timeout' event
-      currentuser && logger.info(`User inactive: ${currentuser.name}`);
-      index !== -1 && removeUserByIndex(index);
-      socket.disconnect(true);
-    }, constants.INACTIVITY_LIMIT); // TODO change to suitable time
-    updateUserByIndex(index, currentuser);
-  }
-};
