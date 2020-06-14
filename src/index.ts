@@ -26,8 +26,6 @@ process.on('SIGTERM', handleTermination(io, server));
 
 process.on('SIGINT', handleTermination(io, server));
 
-// server.listen(PORT);
-
 server.listen(PORT, () => {
   console.log('Listening to port ' + PORT);
 });
