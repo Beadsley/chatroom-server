@@ -7,10 +7,9 @@ import {
   getUsers,
   userExists,
 } from '../services/service.user';
-import { constants } from '../config';
 import http from 'http';
-import { Message } from '../types';
-import { resetTimer, disconnectAllSockets } from "../services/service.socket";
+import { Message, constants } from '../types';
+import { resetTimer, disconnectAllSockets } from '../services/service.socket';
 
 export const handleNewUser = (socket: SocketIO.Socket) => (name: string): void => {
   const { id } = socket;
@@ -57,4 +56,3 @@ export const handleTermination = (io: SocketIO.Server, server: http.Server) => (
     logger.info('Server closed.');
   });
 };
-

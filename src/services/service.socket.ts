@@ -1,5 +1,5 @@
 import { findUserById, findUserIndexById, removeUserByIndex, updateUserByIndex } from '../services/service.user';
-import { constants } from '../config';
+import { constants } from '../types';
 import logger from '../services/service.logger';
 
 export const disconnectAllSockets = (io: SocketIO.Server): void => {
