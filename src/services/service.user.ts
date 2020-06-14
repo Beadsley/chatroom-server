@@ -1,9 +1,4 @@
-interface User {
-  id: string;
-  name: string;
-  inactivityTimer: NodeJS.Timeout | undefined;
-  joined: Date;
-}
+import { User } from '../types';
 
 let users: Array<User> = [];
 
@@ -20,7 +15,8 @@ export const addUser = (id: string, name: string): User => {
 
 export const findUserById = (id: string): User | undefined => users.find((user) => user.id === id);
 
-export const findUserIndexById = (id: string): number => getUsers().findIndex((user) => user.id === id);
+export const findUserIndexById = (id: string): number =>
+  getUsers().findIndex((user) => user.id === id);
 
 export const removeUserByIndex = (index: number): void => {
   users.splice(index, 1);

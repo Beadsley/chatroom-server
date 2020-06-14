@@ -3,3 +3,10 @@ export interface Message {
   sender: string;
   timestamp: Date;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  inactivityTimer: NodeJS.Timeout | undefined;
+  joined: Date;
+}

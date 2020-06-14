@@ -9,6 +9,21 @@ import {
   removeUserByIndex,
   updateUserByIndex,
 } from './service.user';
+import { User } from '../types';
+
+const testuser1: User = {
+  id: 'testuser1',
+  name: 'DAN',
+  inactivityTimer: undefined,
+  joined: new Date(),
+};
+
+const testuser2: User = {
+  id: 'testuser2',
+  name: 'CHARLIE',
+  inactivityTimer: undefined,
+  joined: new Date(),
+};
 
 describe('Service User Module', () => {
   beforeEach(() => {
@@ -17,82 +32,77 @@ describe('Service User Module', () => {
 
   describe('Add User', () => {
     it('should add one user', () => {
-      addUser('1', 'dan');
+      addUser(testuser1.id, testuser1.name);
       assert.strictEqual(getUsers().length, 1);
     });
     it('should add two users', () => {
-      addUser('1', 'dan');
-      addUser('2', 'charlie');
+      addUser(testuser1.id, testuser1.name);
+      addUser(testuser2.id, testuser2.name);
       assert.strictEqual(getUsers().length, 2);
     });
   });
 
   describe('Find a user by id', () => {
     it('should return a user obj', () => {
-      const id = 'sddn1';
-      addUser(id, 'dan');
-      const expected = {
-        id,
-        name: 'dan',
-        inactivityTimer: undefined,
-        joined: new Date(),
-      };
-      const user = findUserById(id);
-      assert.deepEqual(user, expected);
+      addUser(testuser1.id, testuser1.name);
+      const user = findUserById(testuser1.id);
+      user &&
+        assert.deepEqual(
+          { id: user.id, name: user.name },
+          { id: testuser1.id, name: testuser1.name }
+        );
     });
     it('should return user index', () => {
-      addUser('1', 'dan');
-      addUser('2', 'charlie');
-      const user1index = findUserIndexById('1');
-      const user2index = findUserIndexById('2');
-      const noUser = findUserIndexById('3');
+      addUser(testuser1.id, testuser1.name);
+      addUser(testuser2.id, testuser2.name);
+      const user1index = findUserIndexById(testuser1.id);
+      const user2index = findUserIndexById(testuser2.id);
+      const noUser = findUserIndexById('not null');
       assert.strictEqual(user1index, 0);
       assert.strictEqual(user2index, 1);
       assert.strictEqual(noUser, -1);
     });
     it('should return undefined', () => {
-      const id = 'sddn1';
-      addUser(id, 'dan');
-      const user = findUserById(id + 'not');
+      addUser(testuser1.id, testuser1.name);
+      const user = findUserById(testuser1.id + 'not');
       assert.deepEqual(user, undefined);
     });
   });
 
   describe('See if a user exists', () => {
     it('should return true', () => {
-      const id = '1';
-      addUser(id, 'dan');
-      const exists = userExists('dan');
+      addUser(testuser1.id, testuser1.name);
+      const exists = userExists(testuser1.name);
       assert.strictEqual(exists, true);
     });
     it('should return false', () => {
-      const id = '1';
-      addUser(id, 'dan');
       const exists = userExists('sam');
       assert.strictEqual(exists, false);
     });
   });
   describe('Remove a user', () => {
     it('should remove 1 user from array', () => {
-      addUser('1', 'dan');
-      addUser('2', 'charlie');
+      addUser(testuser1.id, testuser1.name);
+      addUser(testuser2.id, testuser2.name);
       removeUserByIndex(1);
-      const exists = userExists('2');
+      const user1Exists = userExists(testuser1.name);
+      const user2Exists = userExists(testuser2.name);
       assert.strictEqual(getUsers().length, 1);
-      assert.strictEqual(exists, false);
+      assert.strictEqual(user2Exists, false);
+      assert.strictEqual(user1Exists, true);
     });
   });
   describe('Update a user', () => {
     it('should update user name', () => {
-      const id = '1';
-      let user = addUser(id, 'charlie');
+      addUser(testuser1.id, testuser1.name);
       const newUserInfo = {
-        ...user,
+        ...testuser1,
         name: 'dan',
       };
       updateUserByIndex(0, newUserInfo);
-      const updateduser = findUserById(id);
+      const updateduser = findUserById(testuser1.id);
       updateduser && assert.strictEqual(updateduser.name, 'dan');
     });
   });
 });
+ 
