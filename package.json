@@ -5,8 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register ./**/*.test.ts",
-    "tsc": "tsc",
-    "build": "tsc",
+    "tsc": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
     "start": "node build/index.js"

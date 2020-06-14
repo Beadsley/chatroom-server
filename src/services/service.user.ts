@@ -1,6 +1,6 @@
 import { User } from '../types';
 
-let users: Array<User> = [];
+const users: Array<User> = [];
 
 export const addUser = (id: string, name: string): User => {
   const user = {
@@ -15,8 +15,7 @@ export const addUser = (id: string, name: string): User => {
 
 export const findUserById = (id: string): User | undefined => users.find((user) => user.id === id);
 
-export const findUserIndexById = (id: string): number =>
-  getUsers().findIndex((user) => user.id === id);
+export const findUserIndexById = (id: string): number => getUsers().findIndex((user) => user.id === id);
 
 export const removeUserByIndex = (index: number): void => {
   users.splice(index, 1);
