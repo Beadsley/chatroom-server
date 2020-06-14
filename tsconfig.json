@@ -5,12 +5,9 @@
     "module": "commonjs",
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,       
+    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
-  },
-  "exclude": [
-    "src/**/*.test.ts"
-  ]
+  }
 }

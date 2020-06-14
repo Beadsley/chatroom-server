@@ -24,7 +24,7 @@ const inactivityCallback = (socket: SocketIO.Socket) => () => {
 
 export const resetTimer = (socket: SocketIO.Socket): void => {
   const { id } = socket;
-  let currentuser = findUserById(id);
+  const currentuser = findUserById(id);
   if (currentuser) {
     const index = findUserIndexById(id);
     currentuser.inactivityTimer && clearTimeout(currentuser.inactivityTimer);
