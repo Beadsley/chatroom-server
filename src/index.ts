@@ -2,7 +2,12 @@ import express from 'express';
 import socketio from 'socket.io';
 import http from 'http';
 import cors from 'cors';
-import { handleNewUser, handleMessage, handleDisconnect, handleTermination } from './controllers/controller.chatroom';
+import {
+  handleNewUser,
+  handleMessage,
+  handleDisconnect,
+  handleTermination,
+} from './controllers/controller.chatroom';
 
 const PORT = process.env.PORT || 5000;
 
